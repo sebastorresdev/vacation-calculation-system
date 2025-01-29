@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\VacationCalculation.Business\VacationCalculation.Business.csproj" />
+  </ItemGroup>
+
 </Project>

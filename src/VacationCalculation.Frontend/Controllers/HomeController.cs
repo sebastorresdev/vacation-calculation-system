@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using VacationCalculation.Business.Interfaces;
 using VacationCalculation.Frontend.Models;
 
 namespace VacationCalculation.Frontend.Controllers;
@@ -7,15 +8,18 @@ namespace VacationCalculation.Frontend.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IEmployeeService _employeeService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IEmployeeService employeeService)
     {
         _logger = logger;
+        _employeeService = employeeService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var employees = await _employeeService.GetAllEmployeesAsync();
+        return View(employees);
     }
 
     public IActionResult Privacy()
