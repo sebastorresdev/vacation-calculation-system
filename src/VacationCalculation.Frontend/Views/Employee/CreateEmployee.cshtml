@@ -1,0 +1,55 @@
+﻿@model VacationCalculation.Data.Models.Employee
+
+@{
+    ViewData["Title"] = "Nuevo Empleado";
+}
+
+<div class="card">
+    <div class="card-header">
+        Nuevo Empleado
+    </div>
+    <div class="card-body">
+        <form class="row g-3" asp-action="CreateEmployee" method="post">
+            <div class="col-md-6">
+                <label asp-for="Name" class="form-label">Nombre</label>
+                <input asp-for="Name" class="form-control" type="text">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="PaternalSurname" class="form-label">Apellido Paterno</label>
+                <input asp-for="PaternalSurname" class="form-control" type="text">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="MaternalSurname" class="form-label">Apellido Materno</label>
+                <input asp-for="MaternalSurname" class="form-control" type="text">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label">Correo Electronico</label>
+                <input asp-for="Email" class="form-control" type="email">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="DateEntry" class="form-label">Fecha de ingreso</label>
+                <input asp-for="DateEntry" class="form-control" type="date">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Birthday" class="form-label">Cumpleaños</label>
+                <input asp-for="Birthday" class="form-control" type="date">
+            </div>
+            <div class="col-md-6">
+                <label asp-for="DepartamentId" class="form-label">Departamento</label>
+                <select asp-for="DepartamentId" class="form-select" asp-items="ViewBag.Departaments">
+                    <option selected>Seleccionar departamento</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label for="inputTypeEmployee" class="form-label">Tipo empleado</label>
+                <select id="inputTypeEmployee" class="form-select" asp-items="ViewBag.EmployeeTypes">
+                    <option selected>Seleccionar tipo de empleado</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="ListEmployees" class="btn btn-secondary">Regresar</a>
+            </div>
+        </form>
+    </div>
+</div>

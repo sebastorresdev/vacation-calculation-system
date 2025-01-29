@@ -17,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 
     // Add services dependency injection
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+    builder.Services.AddScoped<IEmployeeTypeService, EmployeTypeService>();
+    builder.Services.AddScoped<IDepartamentService, DepartamentService>();
 }
 
 
