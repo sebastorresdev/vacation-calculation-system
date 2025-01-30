@@ -13,15 +13,15 @@ public partial class Employee
 
     public string? MaternalSurname { get; set; }
 
-    public DateOnly? DateEntry { get; set; }
+    public DateOnly DateEntry { get; set; }
 
-    public DateOnly? Birthday { get; set; }
+    public DateOnly Birthday { get; set; }
 
     public string Email { get; set; } = null!;
 
     public int DepartamentId { get; set; }
 
-    public int TypeEmployeeId { get; set; }
+    public int EmployeeTypeId { get; set; }
 
     public bool? Active { get; set; }
 
@@ -29,7 +29,7 @@ public partial class Employee
 
     public virtual Departament Departament { get; set; } = null!;
 
-    public virtual EmployeeType TypeEmployee { get; set; } = null!;
+    public virtual EmployeeType EmployeeType { get; set; } = null!;
 
     public virtual ICollection<VacationRequest> VacationRequests { get; set; } = new List<VacationRequest>();
 }

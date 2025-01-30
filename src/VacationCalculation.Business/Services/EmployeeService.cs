@@ -11,11 +11,15 @@ public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
     // Queries
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
     {
-        return await _dbContext.Employees.ToListAsync();
+        return await _dbContext.Employees
+            .Where(Employee => Employee.Active == true)
+            .Include(Employee => Employee.Departament)
+            .Include(Employee => Employee.EmployeeType)
+            .ToListAsync();
     }
     public async Task<Employee?> GetEmployeeByIdAsync(int id)
     {
-        return await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == id);
+        return await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == id && e.Active == true);
     }
 
     // Commands
@@ -26,7 +30,20 @@ public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
     }
     public async Task UpdateEmployeeAsync(Employee employee)
     {
-        _dbContext.Employees.Update(employee);
+        var editEmployee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id)
+            ?? throw new NullReferenceException("Employee not found");
+
+        editEmployee.Name = employee.Name;
+        editEmployee.PaternalSurname = employee.PaternalSurname;
+        editEmployee.MaternalSurname = employee.MaternalSurname;
+        editEmployee.DateEntry = employee.DateEntry;
+        editEmployee.Birthday = employee.Birthday;
+        editEmployee.Email = employee.Email;
+        editEmployee.DepartamentId = employee.DepartamentId;
+        editEmployee.EmployeeTypeId = employee.EmployeeTypeId;
+
+
+        _dbContext.Employees.Update(editEmployee);
         await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteEmployeeAsync(int id)

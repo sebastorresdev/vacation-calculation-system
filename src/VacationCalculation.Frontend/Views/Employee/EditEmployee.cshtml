@@ -1,15 +1,16 @@
-﻿@model VacationCalculation.Frontend.Models.Employee.CreateEmployeeViewModel
+﻿@model VacationCalculation.Frontend.Models.Employee.UpdateEmployeeViewModel
 
 @{
-    ViewData["Title"] = "Nuevo Empleado";
+    ViewData["Title"] = "Editar Empleado";
 }
 
 <div class="card">
     <div class="card-header">
-        Nuevo Empleado
+        @ViewData["Title"]
     </div>
     <div class="card-body">
-        <form class="row g-3" asp-action="CreateEmployee" method="post">
+        <form class="row g-3" asp-action="EditEmployee" method="post">
+            <input asp-for="Id" type="hidden">
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label">Nombre</label>
                 <input asp-for="Name" class="form-control" type="text">

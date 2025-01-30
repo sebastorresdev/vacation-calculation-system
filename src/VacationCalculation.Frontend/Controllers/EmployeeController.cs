@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using VacationCalculation.Business.Interfaces;
-using VacationCalculation.Data.Models;
+using VacationCalculation.Frontend.Mappings;
+using VacationCalculation.Frontend.Models.Employee;
 
 namespace VacationCalculation.Frontend.Controllers;
 public class EmployeeController(
@@ -18,9 +19,11 @@ public class EmployeeController(
     public async Task<IActionResult> ListEmployees()
     {
         var employees = await _employeeService.GetAllEmployeesAsync();
-        return View(employees);
+
+        return View(employees.Select(e => e.ToViewModel()));
     }
 
+    // Create action method
     public async Task<IActionResult> CreateEmployee()
     {
         var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
@@ -33,15 +36,65 @@ public class EmployeeController(
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateEmployee(Employee employee)
+    public async Task<IActionResult> CreateEmployee(CreateEmployeeViewModel employeeViewModel)
     {
-        if(!ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            return View("EmployeeCreate", employee);
+            var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
+            var departaments = await _departamentService.GetAllDepartamentsAsync();
+
+            ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
+            ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
+
+            return View(nameof(CreateEmployee), employeeViewModel);
         }
 
-        await _employeeService.CreateEmployeeAsync(employee);
+        await _employeeService.CreateEmployeeAsync(employeeViewModel.ToEmployee());
 
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(ListEmployees));
+    }
+
+    // Edit action method
+    public async Task<IActionResult> EditEmployee(int id)
+    {
+        var employee = await _employeeService.GetEmployeeByIdAsync(id);
+
+        if (employee == null)
+        {
+            return RedirectToAction(nameof(ListEmployees));
+        }
+
+        var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
+        var departaments = await _departamentService.GetAllDepartamentsAsync();
+        
+        ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
+        ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
+
+        return View(employee.ToUpdateViewModel());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditEmployee(UpdateEmployeeViewModel employeeViewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
+            var departaments = await _departamentService.GetAllDepartamentsAsync();
+
+            ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
+            ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
+
+            return View(nameof(EditEmployee), employeeViewModel);
+        }
+        await _employeeService.UpdateEmployeeAsync(employeeViewModel.ToEmployee());
+        return RedirectToAction(nameof(ListEmployees));
+    }
+
+    // Delete action method
+    [HttpPost]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        await _employeeService.DeleteEmployeeAsync(id);
+        return RedirectToAction(nameof(ListEmployees));
     }
 }

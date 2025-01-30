@@ -1,4 +1,7 @@
-﻿namespace VacationCalculation.Data.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace VacationCalculation.Data.Models;
 
 public partial class Departament
 {

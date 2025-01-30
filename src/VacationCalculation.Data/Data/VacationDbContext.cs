@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Data.Data;
@@ -27,6 +29,10 @@ public partial class VacationDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<VacationRequest> VacationRequests { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Server=PC-SHEBA\\SQLEXPRESS;Database=vacation_db;Trusted_Connection=False;Encrypt=True;TrustServerCertificate=True;User Id=sa;Password=gal22v10;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -75,6 +81,7 @@ public partial class VacationDbContext : DbContext
                 .HasMaxLength(128)
                 .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.EmployeeTypeId).HasColumnName("employee_type_id");
             entity.Property(e => e.MaternalSurname)
                 .HasMaxLength(64)
                 .IsUnicode(false)
@@ -87,15 +94,14 @@ public partial class VacationDbContext : DbContext
                 .HasMaxLength(64)
                 .IsUnicode(false)
                 .HasColumnName("paternal_surname");
-            entity.Property(e => e.TypeEmployeeId).HasColumnName("type_employee_id");
 
             entity.HasOne(d => d.Departament).WithMany(p => p.Employees)
                 .HasForeignKey(d => d.DepartamentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__employee__id_de__5535A963");
 
-            entity.HasOne(d => d.TypeEmployee).WithMany(p => p.Employees)
-                .HasForeignKey(d => d.TypeEmployeeId)
+            entity.HasOne(d => d.EmployeeType).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.EmployeeTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__employee__id_ti__5629CD9C");
         });
