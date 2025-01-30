@@ -1,0 +1,43 @@
+﻿@model IEnumerable<VacationCalculation.Frontend.Models.Departament.DepartamentViewModel>
+
+@{
+    ViewData["Title"] = "Lista de Departamentos";
+}
+
+<div>
+    <div>
+        @Html.ActionLink("Crear Nuevo", "CreateDepartament")
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "EditDepartament", new { id = item.Id }, new { @class = "btn btn-sm me-2 btn-primary" })
+                        <form asp-action="DeleteDepartament" method="post">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

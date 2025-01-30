@@ -30,11 +30,13 @@ public class EmployeTypeService(VacationDbContext dbContext) : IEmployeeTypeServ
     // Queries
     public async Task<IEnumerable<EmployeeType>> GetAllEmployeeTypesAsync()
     {
-        return await _dbContext.EmployeeTypes.ToListAsync();
+        return await _dbContext.EmployeeTypes
+            .Where(t => t.Active == true)
+            .ToListAsync();
     }
 
     public async Task<EmployeeType?> GetEmployeeTypeByIdAsync(int id)
     {
-        return await _dbContext.EmployeeTypes.FirstOrDefaultAsync(t => t.Id == id);
+        return await _dbContext.EmployeeTypes.FirstOrDefaultAsync(t => t.Id == id && t.Active == true);
     }
 }

@@ -1,0 +1,25 @@
+﻿@model VacationCalculation.Frontend.Models.Departament.CreateDepartamentViewModel
+
+@{
+    ViewData["Title"] = "Nuevo departamento";
+}
+
+<div class="card">
+    <div class="card-header">
+        @ViewData["Title"]
+    </div>
+    <div class="card-body">
+        <form class="row g-3" asp-action="CreateDepartament" method="post">
+            <div class="col-12">
+                <label asp-for="Name" class="form-label">Nombre</label>
+                <input asp-for="Name" class="form-control" type="text">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="ListDepartament" class="btn btn-secondary">Regresar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace VacationCalculation.Data.Models;
+﻿namespace VacationCalculation.Data.Models;
 
 public partial class EmployeeType
 {

@@ -16,12 +16,19 @@ public class DepartamentService(VacationDbContext dbContext) : IDepartamentServi
     }
     public async Task UpdateDepartamentAsync(Departament departament)
     {
-        _dbContext.Departaments.Update(departament);
+        var existingDepartament = await _dbContext.Departaments
+            .FirstOrDefaultAsync(x => x.Id == departament.Id && x.Active == true)
+            ?? throw new NullReferenceException("Departamento no encontrado");
+
+        existingDepartament.Name = departament.Name;
+
+        _dbContext.Departaments.Update(existingDepartament);
         await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteDepartamentAsync(int id)
     {
-        var departament = await _dbContext.Departaments.FirstOrDefaultAsync(x => x.Id == id)
+        var departament = await _dbContext.Departaments
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active == true)
             ?? throw new NullReferenceException("Departamento no encontrado");
         
         departament.Active = false;
@@ -32,11 +39,14 @@ public class DepartamentService(VacationDbContext dbContext) : IDepartamentServi
     // Queries
     public async Task<IEnumerable<Departament>> GetAllDepartamentsAsync()
     {
-        return await _dbContext.Departaments.ToListAsync();
+        return await _dbContext.Departaments
+            .Where(d => d.Active == true)
+            .ToListAsync();
     }
 
     public async Task<Departament?> GetDepartamentByIdAsync(int id)
     {
-        return await _dbContext.Departaments.FirstOrDefaultAsync(d => d.Id == id);
+        return await _dbContext.Departaments
+            .FirstOrDefaultAsync(d => d.Id == id && d.Active == true);
     }
 }

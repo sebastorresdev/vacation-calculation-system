@@ -30,26 +30,29 @@ public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
     }
     public async Task UpdateEmployeeAsync(Employee employee)
     {
-        var editEmployee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == employee.Id)
+        var existingEmployee = await _dbContext.Employees
+            .FirstOrDefaultAsync(e => e.Id == employee.Id && e.Active == true)
             ?? throw new NullReferenceException("Employee not found");
 
-        editEmployee.Name = employee.Name;
-        editEmployee.PaternalSurname = employee.PaternalSurname;
-        editEmployee.MaternalSurname = employee.MaternalSurname;
-        editEmployee.DateEntry = employee.DateEntry;
-        editEmployee.Birthday = employee.Birthday;
-        editEmployee.Email = employee.Email;
-        editEmployee.DepartamentId = employee.DepartamentId;
-        editEmployee.EmployeeTypeId = employee.EmployeeTypeId;
+        existingEmployee.Name = employee.Name;
+        existingEmployee.PaternalSurname = employee.PaternalSurname;
+        existingEmployee.MaternalSurname = employee.MaternalSurname;
+        existingEmployee.DateEntry = employee.DateEntry;
+        existingEmployee.Birthday = employee.Birthday;
+        existingEmployee.Email = employee.Email;
+        existingEmployee.DepartamentId = employee.DepartamentId;
+        existingEmployee.EmployeeTypeId = employee.EmployeeTypeId;
 
 
-        _dbContext.Employees.Update(editEmployee);
+        _dbContext.Employees.Update(existingEmployee);
         await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteEmployeeAsync(int id)
     {
-        var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Id == id)
+        var employee = await _dbContext.Employees
+            .FirstOrDefaultAsync(e => e.Id == id && e.Active == true)
             ?? throw new NullReferenceException("Employee not found");
+        
         employee.Active = false;
         await _dbContext.SaveChangesAsync();
     }
