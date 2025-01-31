@@ -23,6 +23,7 @@ public class DepartamentService(VacationDbContext dbContext) : IDepartamentServi
         existingDepartament.Name = departament.Name;
 
         _dbContext.Departaments.Update(existingDepartament);
+
         await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteDepartamentAsync(int id)

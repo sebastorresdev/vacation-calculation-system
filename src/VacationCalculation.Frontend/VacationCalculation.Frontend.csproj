@@ -10,8 +10,4 @@
     <ProjectReference Include="..\VacationCalculation.Business\VacationCalculation.Business.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\EmployeeType\" />
-  </ItemGroup>
-
 </Project>

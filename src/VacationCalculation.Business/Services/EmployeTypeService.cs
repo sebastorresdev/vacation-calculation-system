@@ -15,15 +15,25 @@ public class EmployeTypeService(VacationDbContext dbContext) : IEmployeeTypeServ
     }
     public async Task UpdateEmployeeTypeAsync(EmployeeType employeeType)
     {
-        _dbContext.EmployeeTypes.Update(employeeType);
+        var existingEmployeeType = await _dbContext.EmployeeTypes
+            .FirstOrDefaultAsync(t => t.Id == employeeType.Id && t.Active == true)
+            ?? throw new NullReferenceException("Tipo de empleado no encontrado");
+        
+        existingEmployeeType.Name = employeeType.Name;
+        existingEmployeeType.DaysPerYear = employeeType.DaysPerYear;
+
+        _dbContext.EmployeeTypes.Update(existingEmployeeType);
+        
         await _dbContext.SaveChangesAsync();
     }
     public async Task DeleteEmployeeTypeAsync(int id)
     {
-        var employeeTypes = await _dbContext.EmployeeTypes.FirstOrDefaultAsync(x => x.Id == id)
+        var employeeTypes = await _dbContext.EmployeeTypes
+            .FirstOrDefaultAsync(x => x.Id == id && x.Active == true)
             ?? throw new NullReferenceException("No existe el tipo de empleado");
 
         employeeTypes.Active = false;
+
         await _dbContext.SaveChangesAsync();
     }
 
@@ -37,6 +47,7 @@ public class EmployeTypeService(VacationDbContext dbContext) : IEmployeeTypeServ
 
     public async Task<EmployeeType?> GetEmployeeTypeByIdAsync(int id)
     {
-        return await _dbContext.EmployeeTypes.FirstOrDefaultAsync(t => t.Id == id && t.Active == true);
+        return await _dbContext.EmployeeTypes
+            .FirstOrDefaultAsync(t => t.Id == id && t.Active == true);
     }
 }
