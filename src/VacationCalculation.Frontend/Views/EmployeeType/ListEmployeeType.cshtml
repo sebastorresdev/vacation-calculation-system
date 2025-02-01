@@ -4,21 +4,25 @@
     ViewData["Title"] = "Tipos de empleados";
 }
 
-<div>
-    <div>
+<div class="card">
+    <div class="card-header">
         @Html.ActionLink("Crear Nuevo", "CreateEmployeeType")
     </div>
-    <table>
+    <div class="card-body">
+        <table class="table table-hover">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Id)
+                    #
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    Nombre
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.DaysPerYear)
+                    Dias por año
+                </th>
+                <th>
+                    Acciones
                 </th>
             </tr>
         </thead>
@@ -35,7 +39,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.DaysPerYear)
                     </td>
-                    <td>
+                    <td class="d-flex">
                         @Html.ActionLink("Editar", "EditEmployeeType", new { id = item.Id }, new { @class = "btn btn-sm me-2 btn-primary" })
                         <form asp-action="DeleteEmployeeType" method="post">
                             <input type="hidden" name="id" value="@item.Id" />
@@ -46,4 +50,5 @@
             }
         </tbody>
     </table>
+    </div>
 </div>
