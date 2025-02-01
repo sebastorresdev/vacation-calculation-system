@@ -9,15 +9,15 @@
         @ViewData["Title"]
     </div>
     <div class="card-body">
-        <form class="row g-3 needs-validation" asp-action="CreateEmployeeType" method="post" novalidate>
+        <form class="row g-3" asp-action="CreateEmployeeType" method="post">
             <div class="col-12">
                 <label asp-for="Name" class="form-label">Nombre</label>
-                <input asp-for="Name" class="form-control" type="text" required>
+                <input asp-for="Name" class="form-control" type="text">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="col-12">
                 <label asp-for="DaysPerYear" class="form-label">Dias</label>
-                <input asp-for="DaysPerYear" class="form-control" type="number" required>
+                <input asp-for="DaysPerYear" class="form-control" type="number">
                 <span asp-validation-for="DaysPerYear" class="text-danger"></span>
             </div>
             <div class="col-12">
@@ -27,28 +27,3 @@
         </form>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        (() => {
-          'use strict'
-
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          const forms = document.querySelectorAll('.needs-validation')
-
-          // Loop over them and prevent submission
-          Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-              if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-              }
-
-              form.classList.add('was-validated')
-
-            }, false)
-          })
-        })()
-    </script>
-}

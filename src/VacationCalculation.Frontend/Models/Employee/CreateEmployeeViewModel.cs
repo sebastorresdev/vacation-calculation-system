@@ -26,11 +26,11 @@ public class CreateEmployeeViewModel
     [DataType(DataType.Date, ErrorMessage = "El campo no es una fecha válida")]
     public DateTime Birthday { get; set; }
 
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "El empleado no puede tener un ID negativo.")]
+    [Required(ErrorMessage = "El departamento seleccionado no es válido")]
+    [Range(1, int.MaxValue, ErrorMessage = "El departamento no puede tener un ID negativo.")]
     public int DepartamentId { get; set; }
 
-    [Required]
-    [Range(1, int.MaxValue, ErrorMessage = "El empleado no puede tener un ID negativo.")]
+    [Required(ErrorMessage = "El tipo de empleado seleccionado no es válido")]
+    [Range(1, int.MaxValue, ErrorMessage = "El tipo de empleado no puede tener un ID negativo.")]
     public int EmployeeTypeId { get; set; }
 }

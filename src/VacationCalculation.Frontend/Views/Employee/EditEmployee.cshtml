@@ -14,10 +14,12 @@
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label">Nombre</label>
                 <input asp-for="Name" class="form-control" type="text">
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="PaternalSurname" class="form-label">Apellido Paterno</label>
                 <input asp-for="PaternalSurname" class="form-control" type="text">
+                <span asp-validation-for="PaternalSurname" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="MaternalSurname" class="form-label">Apellido Materno</label>
@@ -26,26 +28,31 @@
             <div class="col-md-6">
                 <label asp-for="Email" class="form-label">Correo Electronico</label>
                 <input asp-for="Email" class="form-control" type="email">
+                <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="DateEntry" class="form-label">Fecha de ingreso</label>
                 <input asp-for="DateEntry" class="form-control" type="date">
+                <span asp-validation-for="DateEntry" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="Birthday" class="form-label">Cumpleaños</label>
                 <input asp-for="Birthday" class="form-control" type="date">
+                <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="DepartamentId" class="form-label">Departamento</label>
                 <select asp-for="DepartamentId" class="form-select" asp-items="ViewBag.Departaments">
                     <option selected>Seleccionar departamento</option>
                 </select>
+                <span asp-validation-for="DepartamentId" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="EmployeeTypeId" class="form-label">Tipo empleado</label>
                 <select asp-for="EmployeeTypeId" class="form-select" asp-items="ViewBag.EmployeeTypes">
                     <option selected>Seleccionar tipo de empleado</option>
                 </select>
+                <span asp-validation-for="EmployeeTypeId" class="text-danger"></span>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Guardar</button>

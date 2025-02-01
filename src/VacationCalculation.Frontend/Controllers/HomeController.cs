@@ -8,18 +8,15 @@ namespace VacationCalculation.Frontend.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IEmployeeService _employeeService;
 
     public HomeController(ILogger<HomeController> logger, IEmployeeService employeeService)
     {
         _logger = logger;
-        _employeeService = employeeService;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var employees = await _employeeService.GetAllEmployeesAsync();
-        return View(employees);
+        return View();
     }
 
     public IActionResult Privacy()

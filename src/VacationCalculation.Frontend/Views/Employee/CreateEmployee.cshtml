@@ -9,15 +9,15 @@
         @ViewData["Title"]
     </div>
     <div class="card-body">
-        <form class="row g-3 needs-validation" asp-action="CreateEmployee" method="post" novalidate>
+        <form class="row g-3" asp-action="CreateEmployee" method="post">
             <div class="col-md-6">
                 <label asp-for="Name" class="form-label">Nombre</label>
-                <input asp-for="Name" class="form-control" type="text" required>
+                <input asp-for="Name" class="form-control" type="text">
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="PaternalSurname" class="form-label">Apellido Paterno</label>
-                <input asp-for="PaternalSurname" class="form-control" type="text" required>
+                <input asp-for="PaternalSurname" class="form-control" type="text">
                 <span asp-validation-for="PaternalSurname" class="text-danger"></span>
             </div>
             <div class="col-md-6">
@@ -26,29 +26,29 @@
             </div>
             <div class="col-md-6">
                 <label asp-for="Email" class="form-label">Correo Electronico</label>
-                <input asp-for="Email" class="form-control" type="email" required>
+                <input asp-for="Email" class="form-control" type="email">
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="DateEntry" class="form-label">Fecha de ingreso</label>
-                <input asp-for="DateEntry" class="form-control" type="date" required>
+                <input asp-for="DateEntry" class="form-control" type="date">
                 <span asp-validation-for="DateEntry" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="Birthday" class="form-label">Cumpleaños</label>
-                <input asp-for="Birthday" class="form-control" type="date" required>
+                <input asp-for="Birthday" class="form-control" type="date">
                 <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="DepartamentId" class="form-label">Departamento</label>
-                <select asp-for="DepartamentId" class="form-select" asp-items="ViewBag.Departaments" required>
+                <select asp-for="DepartamentId" class="form-select" asp-items="ViewBag.Departaments">
                     <option selected>Seleccionar departamento</option>
                 </select>
                 <span asp-validation-for="DepartamentId" class="text-danger"></span>
             </div>
             <div class="col-md-6">
                 <label asp-for="EmployeeTypeId" class="form-label">Tipo empleado</label>
-                <select asp-for="EmployeeTypeId" class="form-select" asp-items="ViewBag.EmployeeTypes" required>
+                <select asp-for="EmployeeTypeId" class="form-select" asp-items="ViewBag.EmployeeTypes">
                     <option selected>Seleccionar tipo de empleado</option>
                 </select>
                 <span asp-validation-for="EmployeeTypeId" class="text-danger"></span>
@@ -61,26 +61,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        (() => {
-          'use strict'
-
-          // Fetch all the forms we want to apply custom Bootstrap validation styles to
-          const forms = document.querySelectorAll('.needs-validation')
-
-          // Loop over them and prevent submission
-          Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-              if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-              }
-
-              form.classList.add('was-validated')
-            }, false)
-          })
-        })()
-    </script>
-}
