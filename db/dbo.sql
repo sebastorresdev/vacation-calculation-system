@@ -12,7 +12,7 @@
  Target Server Version : 16001135 (16.00.1135)
  File Encoding         : 65001
 
- Date: 29/01/2025 21:51:32
+ Date: 04/02/2025 00:34:57
 */
 
 
@@ -66,6 +66,9 @@ INSERT INTO [dbo].[departament] ([id], [name], [active], [create_date]) VALUES (
 GO
 
 INSERT INTO [dbo].[departament] ([id], [name], [active], [create_date]) VALUES (N'9', N'Finanzas', N'1', N'2025-01-26 22:45:06.587')
+GO
+
+INSERT INTO [dbo].[departament] ([id], [name], [active], [create_date]) VALUES (N'10', N'sssssss', N'0', N'2025-01-31 23:41:29.220')
 GO
 
 SET IDENTITY_INSERT [dbo].[departament] OFF
@@ -155,13 +158,16 @@ GO
 SET IDENTITY_INSERT [dbo].[employee_type] ON
 GO
 
-INSERT INTO [dbo].[employee_type] ([id], [name], [days_per_year], [active], [create_date]) VALUES (N'1', N'Empleados internacionales', N'21', N'1', N'2025-01-03 23:01:14.317')
+INSERT INTO [dbo].[employee_type] ([id], [name], [days_per_year], [active], [create_date]) VALUES (N'1', N'Empleados internacionales', N'22', N'1', N'2025-01-03 23:01:14.317')
 GO
 
 INSERT INTO [dbo].[employee_type] ([id], [name], [days_per_year], [active], [create_date]) VALUES (N'2', N'Empleados locales profesionales', N'16', N'1', N'2025-01-03 23:01:25.023')
 GO
 
 INSERT INTO [dbo].[employee_type] ([id], [name], [days_per_year], [active], [create_date]) VALUES (N'3', N'Empleados locales no profesionales', N'14', N'1', N'2025-01-03 23:01:42.333')
+GO
+
+INSERT INTO [dbo].[employee_type] ([id], [name], [days_per_year], [active], [create_date]) VALUES (N'5', N'prueba dos ejemplo de un usuario', N'2', N'0', N'2025-01-31 23:03:57.717')
 GO
 
 SET IDENTITY_INSERT [dbo].[employee_type] OFF
@@ -198,6 +204,29 @@ GO
 
 
 -- ----------------------------
+-- Table structure for permission
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[permission]') AND type IN ('U'))
+	DROP TABLE [dbo].[permission]
+GO
+
+CREATE TABLE [dbo].[permission] (
+  [id] int  NOT NULL,
+  [name] varchar(128) COLLATE SQL_Latin1_General_CP1_CI_AI  NOT NULL,
+  [create_date] datetime  NULL,
+  [active] bit DEFAULT 1 NULL
+)
+GO
+
+ALTER TABLE [dbo].[permission] SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+-- ----------------------------
+-- Records of permission
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for role
 -- ----------------------------
 IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[role]') AND type IN ('U'))
@@ -222,9 +251,37 @@ GO
 SET IDENTITY_INSERT [dbo].[role] ON
 GO
 
+INSERT INTO [dbo].[role] ([id], [name], [active], [create_date]) VALUES (N'1', N'Empleado', N'1', N'2025-02-03 23:43:08.977')
+GO
+
+INSERT INTO [dbo].[role] ([id], [name], [active], [create_date]) VALUES (N'2', N'Jefe', N'1', N'2025-02-03 23:43:12.217')
+GO
+
 SET IDENTITY_INSERT [dbo].[role] OFF
 GO
 
+
+-- ----------------------------
+-- Table structure for role_permission
+-- ----------------------------
+IF EXISTS (SELECT * FROM sys.all_objects WHERE object_id = OBJECT_ID(N'[dbo].[role_permission]') AND type IN ('U'))
+	DROP TABLE [dbo].[role_permission]
+GO
+
+CREATE TABLE [dbo].[role_permission] (
+  [id] int  NOT NULL,
+  [user_id] int  NULL,
+  [permission_id] int  NULL
+)
+GO
+
+ALTER TABLE [dbo].[role_permission] SET (LOCK_ESCALATION = TABLE)
+GO
+
+
+-- ----------------------------
+-- Records of role_permission
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
@@ -238,7 +295,9 @@ CREATE TABLE [dbo].[user] (
   [password] varchar(255) COLLATE SQL_Latin1_General_CP1_CI_AI  NOT NULL,
   [role_id] int  NOT NULL,
   [active] bit DEFAULT 1 NULL,
-  [create_date] datetime DEFAULT sysdatetime() NULL
+  [create_date] datetime DEFAULT sysdatetime() NULL,
+  [employee_id] int  NULL,
+  [name] varchar(128) COLLATE SQL_Latin1_General_CP1_CI_AI  NOT NULL
 )
 GO
 
@@ -250,6 +309,15 @@ GO
 -- Records of user
 -- ----------------------------
 SET IDENTITY_INSERT [dbo].[user] ON
+GO
+
+INSERT INTO [dbo].[user] ([id], [password], [role_id], [active], [create_date], [employee_id], [name]) VALUES (N'1', N'gal22v10', N'1', N'1', N'2025-02-04 00:06:50.140', N'4', N'storres')
+GO
+
+INSERT INTO [dbo].[user] ([id], [password], [role_id], [active], [create_date], [employee_id], [name]) VALUES (N'2', N'keren12345', N'2', N'0', N'2025-02-04 00:31:24.120', N'5', N'krobles')
+GO
+
+INSERT INTO [dbo].[user] ([id], [password], [role_id], [active], [create_date], [employee_id], [name]) VALUES (N'3', N'123934kdmd', N'1', N'0', N'2025-02-04 00:34:13.130', N'7', N'kkaren')
 GO
 
 SET IDENTITY_INSERT [dbo].[user] OFF
@@ -289,7 +357,7 @@ GO
 -- ----------------------------
 -- Auto increment value for departament
 -- ----------------------------
-DBCC CHECKIDENT ('[dbo].[departament]', RESEED, 9)
+DBCC CHECKIDENT ('[dbo].[departament]', RESEED, 10)
 GO
 
 
@@ -321,7 +389,7 @@ GO
 -- ----------------------------
 -- Auto increment value for employee_type
 -- ----------------------------
-DBCC CHECKIDENT ('[dbo].[employee_type]', RESEED, 4)
+DBCC CHECKIDENT ('[dbo].[employee_type]', RESEED, 5)
 GO
 
 
@@ -358,9 +426,18 @@ GO
 
 
 -- ----------------------------
+-- Primary Key structure for table permission
+-- ----------------------------
+ALTER TABLE [dbo].[permission] ADD CONSTRAINT [PK__permissi__3213E83FD40AD94A] PRIMARY KEY CLUSTERED ([id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
 -- Auto increment value for role
 -- ----------------------------
-DBCC CHECKIDENT ('[dbo].[role]', RESEED, 1)
+DBCC CHECKIDENT ('[dbo].[role]', RESEED, 3)
 GO
 
 
@@ -383,9 +460,18 @@ GO
 
 
 -- ----------------------------
+-- Primary Key structure for table role_permission
+-- ----------------------------
+ALTER TABLE [dbo].[role_permission] ADD CONSTRAINT [PK__role_per__3213E83FA2A7C558] PRIMARY KEY CLUSTERED ([id])
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)  
+ON [PRIMARY]
+GO
+
+
+-- ----------------------------
 -- Auto increment value for user
 -- ----------------------------
-DBCC CHECKIDENT ('[dbo].[user]', RESEED, 1)
+DBCC CHECKIDENT ('[dbo].[user]', RESEED, 3)
 GO
 
 
@@ -439,9 +525,22 @@ GO
 
 
 -- ----------------------------
+-- Foreign Keys structure for table role_permission
+-- ----------------------------
+ALTER TABLE [dbo].[role_permission] ADD CONSTRAINT [role_permission_role_id_fkey] FOREIGN KEY ([user_id]) REFERENCES [dbo].[role] ([id]) ON DELETE NO ACTION ON UPDATE NO ACTION
+GO
+
+ALTER TABLE [dbo].[role_permission] ADD CONSTRAINT [role_permission_permission_id_fkey] FOREIGN KEY ([permission_id]) REFERENCES [dbo].[role] ([id]) ON DELETE NO ACTION ON UPDATE NO ACTION
+GO
+
+
+-- ----------------------------
 -- Foreign Keys structure for table user
 -- ----------------------------
 ALTER TABLE [dbo].[user] ADD CONSTRAINT [FK__user__role_id__693CA210] FOREIGN KEY ([role_id]) REFERENCES [dbo].[role] ([id]) ON DELETE NO ACTION ON UPDATE NO ACTION
+GO
+
+ALTER TABLE [dbo].[user] ADD CONSTRAINT [FK_user_employee_id] FOREIGN KEY ([employee_id]) REFERENCES [dbo].[employee] ([id]) ON DELETE NO ACTION ON UPDATE NO ACTION
 GO
 
 
