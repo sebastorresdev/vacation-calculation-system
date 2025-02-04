@@ -3,17 +3,13 @@ using System.Collections.Generic;
 
 namespace VacationCalculation.Data.Models;
 
-public partial class EmployeeType
+public partial class Permission
 {
     public int Id { get; set; }
 
     public string Name { get; set; } = null!;
 
-    public int DaysPerYear { get; set; }
-
-    public bool? Active { get; set; }
-
     public DateTime? CreateDate { get; set; }
 
-    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    public bool? Active { get; set; }
 }

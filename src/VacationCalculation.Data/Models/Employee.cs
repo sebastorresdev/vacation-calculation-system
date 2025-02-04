@@ -31,5 +31,7 @@ public partial class Employee
 
     public virtual EmployeeType EmployeeType { get; set; } = null!;
 
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
+
     public virtual ICollection<VacationRequest> VacationRequests { get; set; } = new List<VacationRequest>();
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Data.Data;
@@ -24,7 +22,11 @@ public partial class VacationDbContext : DbContext
 
     public virtual DbSet<HolidayDate> HolidayDates { get; set; }
 
+    public virtual DbSet<Permission> Permissions { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<RolePermission> RolePermissions { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -144,6 +146,27 @@ public partial class VacationDbContext : DbContext
                 .HasConstraintName("FK__fechas_va__id_so__5EBF139D");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__permissi__3213E83FD40AD94A");
+
+            entity.ToTable("permission");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.Active)
+                .HasDefaultValue(true)
+                .HasColumnName("active");
+            entity.Property(e => e.CreateDate)
+                .HasColumnType("datetime")
+                .HasColumnName("create_date");
+            entity.Property(e => e.Name)
+                .HasMaxLength(128)
+                .IsUnicode(false)
+                .HasColumnName("name");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__role__3213E83F33F2B71A");
@@ -166,6 +189,27 @@ public partial class VacationDbContext : DbContext
                 .HasColumnName("name");
         });
 
+        modelBuilder.Entity<RolePermission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__role_per__3213E83FA2A7C558");
+
+            entity.ToTable("role_permission");
+
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
+            entity.Property(e => e.PermissionId).HasColumnName("permission_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.RolePermissionPermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .HasConstraintName("role_permission_permission_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RolePermissionUsers)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("role_permission_role_id_fkey");
+        });
+
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__user__3213E83F36757CD1");
@@ -180,11 +224,16 @@ public partial class VacationDbContext : DbContext
                 .HasDefaultValueSql("(sysdatetime())")
                 .HasColumnType("datetime")
                 .HasColumnName("create_date");
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
             entity.Property(e => e.Password)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("password");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Users)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("FK_user_employee_id");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .HasForeignKey(d => d.RoleId)
