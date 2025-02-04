@@ -44,5 +44,8 @@ public class UserService(VacationDbContext dbContext) : IUserService
             .Where(u => u.Active == true).ToListAsync();
     }
 
-    
+    public async Task<IEnumerable<Role>> GetRolesAsync()
+    {
+        return await _dbContext.Roles.ToListAsync();
+    }
 }

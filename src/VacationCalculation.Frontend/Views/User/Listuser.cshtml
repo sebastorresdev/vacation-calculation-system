@@ -6,12 +6,15 @@
 
 <div class="card">
     <div class="card-header">
-        @Html.ActionLink("Crear Nuevo", "CreateDepartament")
+        @Html.ActionLink("Crear Nuevo", "CreateUser")
     </div>
     <div class="card-body">
         <table class="table table-hover">
             <thead>
                 <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Email)
                     </th>
@@ -28,13 +31,16 @@
                 {
                     <tr>
                         <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.Email)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Role)
                         </td>
                         <td class="d-flex">
-                            @Html.ActionLink("Editar", "EditDepartament",
+                            @Html.ActionLink("Editar", "EditUser",
                                      new { id = item.Id }, new { @class = "btn btn-sm me-2 btn-primary" })
                             <form asp-action="DeleteDepartament" method="post">
                                 <input type="hidden" name="id" value="@item.Id" />

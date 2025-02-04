@@ -1,4 +1,7 @@
-﻿namespace VacationCalculation.Data.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace VacationCalculation.Data.Models;
 
 public partial class User
 {
@@ -13,6 +16,8 @@ public partial class User
     public DateTime? CreateDate { get; set; }
 
     public int? EmployeeId { get; set; }
+
+    public string Name { get; set; } = null!;
 
     public virtual Employee? Employee { get; set; }
 
