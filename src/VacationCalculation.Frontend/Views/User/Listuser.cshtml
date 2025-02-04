@@ -1,3 +1,49 @@
-﻿<div>
-    Hola soy users
+﻿@model IEnumerable<VacationCalculation.Frontend.Models.User.UserViewModel>
+
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+}
+
+<div class="card">
+    <div class="card-header">
+        @Html.ActionLink("Crear Nuevo", "CreateDepartament")
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Role)
+                    </th>
+                    <th>
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Role)
+                        </td>
+                        <td class="d-flex">
+                            @Html.ActionLink("Editar", "EditDepartament",
+                                     new { id = item.Id }, new { @class = "btn btn-sm me-2 btn-primary" })
+                            <form asp-action="DeleteDepartament" method="post">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

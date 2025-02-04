@@ -36,9 +36,12 @@ public class UserService(VacationDbContext dbContext) : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<IEnumerable<User>> GetUsersAsync()
+    public async Task<IEnumerable<User>> GetUsersAsync()
     {
-        throw new NotImplementedException();
+        return await _dbContext.Users
+            .Include(u => u.Role)
+            .Include(u => u.Employee)
+            .Where(u => u.Active == true).ToListAsync();
     }
 
     

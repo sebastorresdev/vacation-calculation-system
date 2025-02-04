@@ -19,6 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
     builder.Services.AddScoped<IEmployeeTypeService, EmployeTypeService>();
     builder.Services.AddScoped<IDepartamentService, DepartamentService>();
+    builder.Services.AddScoped<IUserService, UserService>();
 }
 
 
