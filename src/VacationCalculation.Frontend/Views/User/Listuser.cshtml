@@ -42,7 +42,7 @@
                         <td class="d-flex">
                             @Html.ActionLink("Editar", "EditUser",
                                      new { id = item.Id }, new { @class = "btn btn-sm me-2 btn-primary" })
-                            <form asp-action="DeleteDepartament" method="post">
+                            <form asp-action="DeleteUser" method="post">
                                 <input type="hidden" name="id" value="@item.Id" />
                                 <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                             </form>

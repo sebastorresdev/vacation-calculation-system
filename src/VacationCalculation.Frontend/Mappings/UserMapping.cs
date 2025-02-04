@@ -26,4 +26,26 @@ public static class UserMapping
             EmployeeId = viewModel.EmployeeId
         };
     }
+
+    public static UpdateUserViewModel ToUpdateViewModel(this User user)
+    {
+        return new UpdateUserViewModel
+        {
+            Id = user.Id,
+            Name = user.Name,
+            RoleId = user.RoleId,
+            EmployeeId = user.EmployeeId
+        };
+    }
+
+    public static User ToUser(this UpdateUserViewModel viewModel)
+    {
+        return new User
+        {
+            Id = viewModel.Id,
+            Name = viewModel.Name,
+            RoleId = viewModel.RoleId,
+            EmployeeId = viewModel.EmployeeId
+        };
+    }
 }

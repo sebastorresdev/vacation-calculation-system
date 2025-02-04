@@ -19,21 +19,27 @@ public class UserService(VacationDbContext dbContext) : IUserService
         var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id && u.Active == true)
             ?? throw new NullReferenceException($"No existe el usuario con id {user.Id}");
 
-        existingUser.Password = user.Password;
+        existingUser.Name = user.Name;
         existingUser.RoleId = user.RoleId;
+        existingUser.EmployeeId = user.EmployeeId;
 
         _dbContext.Users.Update(existingUser);
         await _dbContext.SaveChangesAsync();
     }
-    public Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(int id)
     {
-        throw new NotImplementedException();
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id && u.Active == true)
+            ?? throw new NullReferenceException($"No existe el usuario con id {id}");
+
+        user.Active = false;
+        await _dbContext.SaveChangesAsync();
     }
 
     // Queries
     public Task<User?> GetUserByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == id && u.Active == true);
     }
 
     public async Task<IEnumerable<User>> GetUsersAsync()
