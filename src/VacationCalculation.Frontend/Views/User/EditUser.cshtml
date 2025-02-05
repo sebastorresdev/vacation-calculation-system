@@ -11,6 +11,13 @@
     <div class="card-body">
         <form class="row g-3" asp-action="EditUser" method="post">
             <input type="hidden" asp-for="Id" />
+            @if (ViewBag.Error is not null)
+            {
+                <div class="alert alert-dismissible alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    @ViewBag.Error
+                </div>
+            }
             <div class="col-12">
                 <label asp-for="Name" class="form-label">Nombre</label>
                 <input asp-for="Name" class="form-control" type="text">

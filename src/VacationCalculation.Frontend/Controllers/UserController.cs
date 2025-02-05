@@ -11,19 +11,19 @@ public class UserController(IUserService userService, IEmployeeService employeeS
     private readonly IUserService _userService = userService;
     private readonly IEmployeeService _employeeService = employeeService;
 
+    private readonly IEnumerable<Role> _roles = userService.GetRolesAsync().Result;
+    private readonly IEnumerable<Employee> _employees = employeeService.GetAllEmployeesAsync().Result;
+
     public async Task<IActionResult> ListUser()
     {
         var users = await _userService.GetUsersAsync();
         return View(users.Select(u => u.ToViewModel()));
     }
 
-    public async Task<IActionResult> CreateUser()
+    public IActionResult CreateUser()
     {
-        var roles = await _userService.GetRolesAsync();
-        var employees = await _employeeService.GetAllEmployeesAsync();
-
-        ViewBag.Roles = new SelectList(roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(employees, "Id", "Name");
+        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
 
         return View();
     }
@@ -31,32 +31,40 @@ public class UserController(IUserService userService, IEmployeeService employeeS
     [HttpPost]
     public async Task<IActionResult> CreateUser(CreateUserViewModel newUser)
     {
-        if (!ModelState.IsValid)
+        if(!ModelState.IsValid)
         {
-            var roles = await _userService.GetRolesAsync();
-            var employees = await _employeeService.GetAllEmployeesAsync();
-
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
-            ViewBag.Employees = new SelectList(employees, "Id", "Name");
+            ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+            ViewBag.Employees = new SelectList(_employees, "Id", "Name");
 
             return View(newUser);
         }
 
-        await _userService.CreateUserAsync(newUser.ToUser());
-        return RedirectToAction(nameof(ListUser));
+        try
+        {
+            await _userService.CreateUserAsync(newUser.ToUser());
+            return RedirectToAction(nameof(ListUser));
+        }
+        catch(Exception ex)
+        {
+            ViewBag.Error = ex.Message;
+        }
+
+        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
+
+        return View(newUser);
     }
 
     public async Task<IActionResult> EditUser(int id)
     {
         var user = await _userService.GetUserByIdAsync(id);
-        if (user == null)
+        if(user == null)
         {
             return NotFound();
         }
-        var roles = await _userService.GetRolesAsync();
-        var employees = await _employeeService.GetAllEmployeesAsync();
-        ViewBag.Roles = new SelectList(roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(employees, "Id", "Name");
+       
+        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
 
         var u = user.ToUpdateViewModel();
         return View(u);
@@ -65,16 +73,26 @@ public class UserController(IUserService userService, IEmployeeService employeeS
     [HttpPost]
     public async Task<IActionResult> EditUser(UpdateUserViewModel editUser)
     {
-        if (!ModelState.IsValid)
+        if(!ModelState.IsValid)
         {
-            var roles = await _userService.GetRolesAsync();
-            var employees = await _employeeService.GetAllEmployeesAsync();
-            ViewBag.Roles = new SelectList(roles, "Id", "Name");
-            ViewBag.Employees = new SelectList(employees, "Id", "Name");
+            ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+            ViewBag.Employees = new SelectList(_employees, "Id", "Name");
             return View(editUser);
         }
-        await _userService.UpdateUserAsync(editUser.ToUser());
-        return RedirectToAction(nameof(ListUser));
+
+        try
+        {
+            await _userService.UpdateUserAsync(editUser.ToUser());
+            return RedirectToAction(nameof(ListUser));
+        }
+        catch(Exception ex)
+        {
+            ViewBag.Error = ex.Message;
+        }
+
+        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
+        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
+        return View(editUser);
     }
 
     [HttpPost]
