@@ -6,8 +6,8 @@ public interface IUserService
 {
     // Queries
     Task<User?> GetUserByIdAsync(int id);
-    Task<IEnumerable<User>> GetUsersAsync();
-    Task<IEnumerable<Role>> GetRolesAsync();
+    Task<List<User>> GetUsersAsync();
+    Task<List<Role>> GetRolesAsync();
 
     // Commands
     Task<Result<User>> CreateUserAsync(User user);

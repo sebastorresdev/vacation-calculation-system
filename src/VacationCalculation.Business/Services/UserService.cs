@@ -3,6 +3,7 @@ using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Business.common.utils;
 using VacationCalculation.Business.Errors;
 using VacationCalculation.Data.Data;
+using VacationCalculation.Data.Enums;
 using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Business.Services;
@@ -13,8 +14,18 @@ public class UserService(VacationDbContext dbContext) : IUserService
     // Commands
     public async Task<Result<User>> CreateUserAsync(User user)
     {
+        // Verficar si no existe un nombre usuario igual
         if(!await IsUsernameUniqueAsync(user.Name))
             return UserErrors.UserExisting(user.Name);
+
+        if(user.EmployeeId is not null && !await IsEmployeeAvailable(user.EmployeeId.Value))
+            return UserErrors.UserEmployeeAlreadyAssigned();
+
+        // Verfica si se le puede asignar el rol de jefe
+        if(user.EmployeeId is not null &&
+           user.RoleId == ((int)RoleType.Boos) &&
+           !await RoleBossIsAvailable(user.EmployeeId.Value, user))
+            return UserErrors.UserExistingRole();
 
         await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
@@ -23,14 +34,26 @@ public class UserService(VacationDbContext dbContext) : IUserService
     }
     public async Task<Result<bool>> UpdateUserAsync(User user)
     {
-        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id && u.Active == true);
+        var existingUser = await _dbContext.Users
+            .FirstOrDefaultAsync(u => u.Id == user.Id && u.Active == true);
 
-        if (existingUser is null)
+        if(existingUser is null)
             return UserErrors.UserNotFound();
 
         if((user.Name != existingUser.Name) && !await IsUsernameUniqueAsync(user.Name))
             return UserErrors.UserExisting(user.Name);
+
+        if( user.EmployeeId != existingUser.EmployeeId &&
+            user.EmployeeId is not null &&
+            !await IsEmployeeAvailable(user.EmployeeId.Value))
+            return UserErrors.UserEmployeeAlreadyAssigned();
+
+        if( user.EmployeeId is not null &&
+            user.RoleId == ((int)RoleType.Boos) &&
+            !await RoleBossIsAvailable(user.EmployeeId.Value, existingUser))
+            return UserErrors.UserExistingRole();
         
+        if (user.EmployeeId is not null)
 
         existingUser.Name = user.Name;
         existingUser.RoleId = user.RoleId;
@@ -43,7 +66,7 @@ public class UserService(VacationDbContext dbContext) : IUserService
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id && u.Active == true);
 
-        if (user is null)
+        if(user is null)
             return UserErrors.UserNotFound();
 
         user.Active = false;
@@ -61,9 +84,9 @@ public class UserService(VacationDbContext dbContext) : IUserService
             .FirstOrDefaultAsync(u => u.Id == id && u.Active == true);
     }
 
-    public async Task<IEnumerable<User>> GetUsersAsync()
+    public Task<List<User>> GetUsersAsync()
     {
-        return await _dbContext.Users
+        return _dbContext.Users
             .AsNoTracking()
             .Include(u => u.Role)
             .Include(u => u.Employee)
@@ -71,9 +94,9 @@ public class UserService(VacationDbContext dbContext) : IUserService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Role>> GetRolesAsync()
+    public Task<List<Role>> GetRolesAsync()
     {
-        return await _dbContext.Roles
+        return _dbContext.Roles
             .AsNoTracking()
             .ToListAsync();
     }
@@ -83,5 +106,30 @@ public class UserService(VacationDbContext dbContext) : IUserService
         return !await _dbContext.Users
             .AsNoTracking()
             .AnyAsync(u => u.Name == username && u.Active == true);
+    }
+
+    private async Task<bool> RoleBossIsAvailable(int employeeId, User user)
+    {
+        var employee = await _dbContext.Employees
+            .FirstOrDefaultAsync(e => e.Id == employeeId && e.Active == true);
+
+        if(employee is null)
+            return true;
+
+        var existingBoss = _dbContext.Users
+            .Include(u => u.Employee)
+            .FirstOrDefault(u => u.Employee != null 
+                && u.Employee.DepartamentId == employee.DepartamentId 
+                && u.RoleId == ((int)RoleType.Boos)
+                && u.Active == true);
+
+        return existingBoss is null || existingBoss == user;
+    }
+
+    private async Task<bool> IsEmployeeAvailable(int employeeId)
+    {
+        return !await _dbContext.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.EmployeeId == employeeId && u.Active == true);
     }
 }
