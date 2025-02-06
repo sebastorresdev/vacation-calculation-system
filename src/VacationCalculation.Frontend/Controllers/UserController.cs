@@ -33,17 +33,15 @@ public class UserController(IUserService userService, IEmployeeService employeeS
             return View(newUser);
         }
 
-        try
-        {
-            await _userService.CreateUserAsync(newUser.ToUser());
+
+        var result = await _userService.CreateUserAsync(newUser.ToUser());
+
+        if (result.IsSuccess)
             return RedirectToAction(nameof(ListUser));
-        }
-        catch(Exception ex)
-        {
-            ViewBag.Error = ex.Message;
-            await LoadRolesAndEmployees();
-            return View(newUser);
-        }
+
+        ViewBag.Error = result.Error!.Description;
+        await LoadRolesAndEmployees();
+        return View(newUser);
     }
 
     public async Task<IActionResult> EditUser(int id)
@@ -68,17 +66,14 @@ public class UserController(IUserService userService, IEmployeeService employeeS
             return View(editUser);
         }
 
-        try
-        {
-            await _userService.UpdateUserAsync(editUser.ToUser());
+        var result = await _userService.UpdateUserAsync(editUser.ToUser());
+
+        if(result.IsSuccess)
             return RedirectToAction(nameof(ListUser));
-        }
-        catch(Exception ex)
-        {
-            ViewBag.Error = ex.Message;
-            await LoadRolesAndEmployees();
-            return View(editUser);
-        }
+
+        ViewBag.Error = result.Error!.Description;
+        await LoadRolesAndEmployees();
+        return View(editUser);
     }
 
     [HttpPost]
