@@ -14,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
         {
             options.LoginPath = "/Login"; // Ruta a la página de login
             options.AccessDeniedPath = "/Home/Privacy"; // Ruta a la página de acceso denegado
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Expira en 30 min
+            options.SlidingExpiration = true; // Renueva el tiempo con actividad
         });
 
     builder.Services.AddAuthorization();

@@ -1,0 +1,12 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Acerca de";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    <div class="content p-3">
+        <pre class="text-justify">@Model</pre>
+    </div>
+</div>

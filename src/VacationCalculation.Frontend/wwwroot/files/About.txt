@@ -1,0 +1,15 @@
+Bienvenido al Sistema de Cálculo de Vacaciones, una solución diseñada para gestionar eficientemente las 
+vacaciones de los empleados dentro de una organización. Nuestro objetivo es proporcionar una herramienta 
+intuitiva y automatizada que facilite el seguimiento y la administración de los días de descanso de cada colaborador.
+
+Contáctanos
+
+Si deseas saber más sobre nuestro sistema o tienes alguna consulta, no dudes en ponerte en contacto con nosotros:
+
+📧 Correo: soporte@sistemavacaciones.com
+
+📞 Teléfono: +51 948 965 622
+
+🌐 Sitio web: www.sistemavacaciones.com
+
+Gracias por confiar en nuestro sistema para la gestión de vacaciones!
