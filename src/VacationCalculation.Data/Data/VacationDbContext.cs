@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Data.Data;
@@ -201,14 +199,16 @@ public partial class VacationDbContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("id");
             entity.Property(e => e.PermissionId).HasColumnName("permission_id");
-            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.RoleId).HasColumnName("role_id");
 
             entity.HasOne(d => d.Permission).WithMany(p => p.RolePermissionPermissions)
                 .HasForeignKey(d => d.PermissionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("role_permission_permission_id_fkey");
 
-            entity.HasOne(d => d.User).WithMany(p => p.RolePermissionUsers)
-                .HasForeignKey(d => d.UserId)
+            entity.HasOne(d => d.Role).WithMany(p => p.RolePermissionRoles)
+                .HasForeignKey(d => d.RoleId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("role_permission_role_id_fkey");
         });
 

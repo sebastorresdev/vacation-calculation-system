@@ -1,6 +1,7 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VacationCalculation.Business.Interfaces;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Frontend.Models;
 
 namespace VacationCalculation.Frontend.Controllers;
@@ -14,6 +15,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [Authorize]
     public IActionResult Index()
     {
         return View();

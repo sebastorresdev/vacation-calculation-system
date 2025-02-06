@@ -1,6 +1,6 @@
 ﻿using VacationCalculation.Data.Models;
 
-namespace VacationCalculation.Business.Interfaces;
+namespace VacationCalculation.Business.common.Interfaces;
 public interface IDepartamentService
 {
     // Queries

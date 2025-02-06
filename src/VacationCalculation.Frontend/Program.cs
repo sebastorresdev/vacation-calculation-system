@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using VacationCalculation.Business.Interfaces;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Business.Services;
 using VacationCalculation.Data.Data;
 
@@ -7,6 +7,16 @@ var builder = WebApplication.CreateBuilder(args);
 {
     // Add services to the container.
     builder.Services.AddControllersWithViews();
+
+    // Configurar autenticación con cookies
+    builder.Services.AddAuthentication("CookieAuth")
+        .AddCookie("CookieAuth", options =>
+        {
+            options.LoginPath = "/Login"; // Ruta a la página de login
+            options.AccessDeniedPath = "/Home/Privacy"; // Ruta a la página de acceso denegado
+        });
+
+    builder.Services.AddAuthorization();
 
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -20,6 +30,8 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IEmployeeTypeService, EmployeTypeService>();
     builder.Services.AddScoped<IDepartamentService, DepartamentService>();
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<ILoginService, LoginService>();
+    
 }
 
 
@@ -36,6 +48,8 @@ var app = builder.Build();
     app.UseHttpsRedirection();
     app.UseRouting();
 
+    // Habilitar autenticación y autorización
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapStaticAssets();

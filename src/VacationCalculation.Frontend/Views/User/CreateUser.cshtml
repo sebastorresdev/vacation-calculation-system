@@ -9,13 +9,13 @@
         @ViewData["Title"]
     </div>
     <div class="card-body">
-        @if(ViewBag.Error is not null)
-        {
-            <div class="alert alert-dismissible alert-danger">
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                @ViewBag.Error
-            </div>
-        }
+          @if (ViewBag.Error is not null)
+            {
+                <div class="alert alert-dismissible alert-danger">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    @ViewBag.Error
+                </div>
+            }
         
         <form class="row g-3" asp-action="CreateUser" method="post">
             <div class="col-12">

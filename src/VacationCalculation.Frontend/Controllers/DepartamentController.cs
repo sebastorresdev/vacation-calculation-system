@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VacationCalculation.Business.Interfaces;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Frontend.Mappings;
 using VacationCalculation.Frontend.Models.Departament;
 
 namespace VacationCalculation.Frontend.Controllers;
+
+[Authorize]
 public class DepartamentController(IDepartamentService departamentService) : Controller
 {
     private readonly IDepartamentService _departamentService = departamentService;

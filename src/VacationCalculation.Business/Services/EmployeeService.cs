@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VacationCalculation.Business.Interfaces;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Data.Data;
 using VacationCalculation.Data.Models;
 

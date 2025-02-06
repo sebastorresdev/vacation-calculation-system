@@ -1,18 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using VacationCalculation.Business.Interfaces;
-using VacationCalculation.Data.Models;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Frontend.Mappings;
 using VacationCalculation.Frontend.Models.User;
 
 namespace VacationCalculation.Frontend.Controllers;
+[Authorize]
 public class UserController(IUserService userService, IEmployeeService employeeService) : Controller
 {
     private readonly IUserService _userService = userService;
     private readonly IEmployeeService _employeeService = employeeService;
-
-    private readonly IEnumerable<Role> _roles = userService.GetRolesAsync().Result;
-    private readonly IEnumerable<Employee> _employees = employeeService.GetAllEmployeesAsync().Result;
 
     public async Task<IActionResult> ListUser()
     {
@@ -20,11 +18,9 @@ public class UserController(IUserService userService, IEmployeeService employeeS
         return View(users.Select(u => u.ToViewModel()));
     }
 
-    public IActionResult CreateUser()
+    public async Task<IActionResult> CreateUser()
     {
-        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
-
+        await LoadRolesAndEmployees();
         return View();
     }
 
@@ -33,9 +29,7 @@ public class UserController(IUserService userService, IEmployeeService employeeS
     {
         if(!ModelState.IsValid)
         {
-            ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-            ViewBag.Employees = new SelectList(_employees, "Id", "Name");
-
+            await LoadRolesAndEmployees();
             return View(newUser);
         }
 
@@ -47,12 +41,9 @@ public class UserController(IUserService userService, IEmployeeService employeeS
         catch(Exception ex)
         {
             ViewBag.Error = ex.Message;
+            await LoadRolesAndEmployees();
+            return View(newUser);
         }
-
-        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
-
-        return View(newUser);
     }
 
     public async Task<IActionResult> EditUser(int id)
@@ -63,9 +54,7 @@ public class UserController(IUserService userService, IEmployeeService employeeS
             return NotFound();
         }
        
-        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
-
+        await LoadRolesAndEmployees();
         var u = user.ToUpdateViewModel();
         return View(u);
     }
@@ -75,8 +64,7 @@ public class UserController(IUserService userService, IEmployeeService employeeS
     {
         if(!ModelState.IsValid)
         {
-            ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-            ViewBag.Employees = new SelectList(_employees, "Id", "Name");
+            await LoadRolesAndEmployees();
             return View(editUser);
         }
 
@@ -88,17 +76,27 @@ public class UserController(IUserService userService, IEmployeeService employeeS
         catch(Exception ex)
         {
             ViewBag.Error = ex.Message;
+            await LoadRolesAndEmployees();
+            return View(editUser);
         }
-
-        ViewBag.Roles = new SelectList(_roles, "Id", "Name");
-        ViewBag.Employees = new SelectList(_employees, "Id", "Name");
-        return View(editUser);
     }
 
     [HttpPost]
     public async Task<IActionResult> DeleteUser(int id)
     {
+        var user = await _userService.GetUserByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
         await _userService.DeleteUserAsync(id);
         return RedirectToAction(nameof(ListUser));
+    }
+
+    private async Task LoadRolesAndEmployees()
+    {
+        ViewBag.Roles = new SelectList(await _userService.GetRolesAsync(), "Id", "Name");
+        ViewBag.Employees = new SelectList(await _employeeService.GetAllEmployeesAsync(), "Id", "Name");
     }
 }

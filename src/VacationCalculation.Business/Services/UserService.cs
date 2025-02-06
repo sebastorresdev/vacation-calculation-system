@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VacationCalculation.Business.Interfaces;
+using VacationCalculation.Business.common.Interfaces;
+using VacationCalculation.Business.common.utils;
+using VacationCalculation.Business.Errors;
 using VacationCalculation.Data.Data;
 using VacationCalculation.Data.Models;
 
@@ -9,21 +11,25 @@ public class UserService(VacationDbContext dbContext) : IUserService
     private readonly VacationDbContext _dbContext = dbContext;
 
     // Commands
-    public async Task CreateUserAsync(User user)
+    public async Task<Result<User>> CreateUserAsync(User user)
     {
         if(!await IsUsernameUniqueAsync(user.Name))
-            throw new InvalidOperationException($"Ya existe un nombre de usuario para {user.Name}");
+            return UserErrors.UserExisting(user.Name);
 
         await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
+
+        return user;
     }
-    public async Task UpdateUserAsync(User user)
+    public async Task<Result<bool>> UpdateUserAsync(User user)
     {
-        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id && u.Active == true)
-            ?? throw new NullReferenceException($"No existe el usuario con id {user.Id}");
+        var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id && u.Active == true);
+
+        if (existingUser is null)
+            return UserErrors.UserNotFound();
 
         if((user.Name != existingUser.Name) && !await IsUsernameUniqueAsync(user.Name))
-            throw new InvalidOperationException($"Ya existe un nombre de usuario para {user.Name}");
+            return UserErrors.UserExisting(user.Name);
         
 
         existingUser.Name = user.Name;
@@ -31,14 +37,18 @@ public class UserService(VacationDbContext dbContext) : IUserService
         existingUser.EmployeeId = user.EmployeeId;
 
         await _dbContext.SaveChangesAsync();
+        return true;
     }
-    public async Task DeleteUserAsync(int id)
+    public async Task<Result<bool>> DeleteUserAsync(int id)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id && u.Active == true)
-            ?? throw new NullReferenceException($"No existe el usuario con id {id}");
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == id && u.Active == true);
+
+        if (user is null)
+            return UserErrors.UserNotFound();
 
         user.Active = false;
         await _dbContext.SaveChangesAsync();
+        return true;
     }
 
     // Queries
@@ -70,10 +80,8 @@ public class UserService(VacationDbContext dbContext) : IUserService
 
     private async Task<bool> IsUsernameUniqueAsync(string username)
     {
-        if(string.IsNullOrWhiteSpace(username))
-            throw new ArgumentException("El nombre de usuario no puede estar vacío", nameof(username));
-
-        return !await _dbContext.Users.AsNoTracking().AnyAsync(u => u.Name == username);
+        return !await _dbContext.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Name == username && u.Active == true);
     }
-
 }

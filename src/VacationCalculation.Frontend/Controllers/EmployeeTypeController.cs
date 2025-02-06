@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using VacationCalculation.Business.Interfaces;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Frontend.Mappings;
 using VacationCalculation.Frontend.Models.EmployeeType;
 
 namespace VacationCalculation.Frontend.Controllers;
+[Authorize]
 public class EmployeeTypeController(IEmployeeTypeService employeeTypeService) : Controller
 {
     private readonly IEmployeeTypeService _employeeTypeService = employeeTypeService;

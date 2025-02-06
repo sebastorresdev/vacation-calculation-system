@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using VacationCalculation.Business.Interfaces;
+using VacationCalculation.Business.common.Interfaces;
 using VacationCalculation.Frontend.Mappings;
 using VacationCalculation.Frontend.Models.Employee;
 
 namespace VacationCalculation.Frontend.Controllers;
+[Authorize]
 public class EmployeeController(
     IEmployeeService employeeService,
     IDepartamentService departamentService,
