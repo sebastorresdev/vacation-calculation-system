@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VacationCalculation.Business.common.Interfaces;
+using VacationCalculation.Business.common.Validations;
 using VacationCalculation.Business.Services;
 using VacationCalculation.Data.Data;
 
@@ -33,7 +34,10 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddScoped<IDepartamentService, DepartamentService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<ILoginService, LoginService>();
-    
+    builder.Services.AddScoped<UserValidation>();
+    builder.Services.AddScoped<EmployeeValidation>();
+    builder.Services.AddScoped<DepartamentValidation>();
+
 }
 
 

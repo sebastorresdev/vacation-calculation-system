@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VacationCalculation.Business.common.Interfaces;
+using VacationCalculation.Business.common.utils;
+using VacationCalculation.Business.common.Validations;
 using VacationCalculation.Data.Data;
 using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Business.Services;
-public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
+public class EmployeeService(VacationDbContext dbContext, EmployeeValidation employeeValidation) : IEmployeeService
 {
     private readonly VacationDbContext _dbContext = dbContext;
+    private readonly EmployeeValidation _employeeValidation = employeeValidation;
 
     // Queries
     public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
@@ -23,16 +26,26 @@ public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
     }
 
     // Commands
-    public async Task CreateEmployeeAsync(Employee employee)
+    public async Task<Result<Employee>> CreateEmployeeAsync(Employee employee)
     {
         await _dbContext.Employees.AddAsync(employee);
         await _dbContext.SaveChangesAsync();
+
+        return employee;
     }
-    public async Task UpdateEmployeeAsync(Employee employee)
+    public async Task<Result<bool>> UpdateEmployeeAsync(Employee employee)
     {
+        var validationResult = await _employeeValidation.ValidateAsync(employee);
+
+        if (!validationResult.IsValid)
+            return validationResult.Errors;
+
         var existingEmployee = await _dbContext.Employees
-            .FirstOrDefaultAsync(e => e.Id == employee.Id && e.Active == true)
-            ?? throw new NullReferenceException("Employee not found");
+            .FirstOrDefaultAsync(e => e.Id == employee.Id && e.Active == true);
+
+        if (existingEmployee == null)
+            return Error.NotFound("Employee.Error","Employee not found");
+
 
         existingEmployee.Name = employee.Name;
         existingEmployee.PaternalSurname = employee.PaternalSurname;
@@ -46,15 +59,21 @@ public class EmployeeService(VacationDbContext dbContext) : IEmployeeService
 
         _dbContext.Employees.Update(existingEmployee);
         await _dbContext.SaveChangesAsync();
+
+        return true;
     }
-    public async Task DeleteEmployeeAsync(int id)
+    public async Task<Result<bool>> DeleteEmployeeAsync(int id)
     {
         var employee = await _dbContext.Employees
-            .FirstOrDefaultAsync(e => e.Id == id && e.Active == true)
-            ?? throw new NullReferenceException("Employee not found");
-        
+            .FirstOrDefaultAsync(e => e.Id == id && e.Active == true);
+
+        if(employee is null)
+            return Error.NotFound("Employee.Error", "Employee not found");
+
         employee.Active = false;
         await _dbContext.SaveChangesAsync();
+
+        return true;
     }
     
 }

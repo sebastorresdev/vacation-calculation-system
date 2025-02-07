@@ -39,7 +39,10 @@ public class UserController(IUserService userService, IEmployeeService employeeS
         if (result.IsSuccess)
             return RedirectToAction(nameof(ListUser));
 
-        ViewBag.Error = result.Error!.Description;
+        if (result.Error?.Metadatos?.ContainsKey("Errors") == true)
+        {
+            ViewBag.Errors = result.Error.Metadatos["Errors"];
+        }
         await LoadRolesAndEmployees();
         return View(newUser);
     }
@@ -71,7 +74,10 @@ public class UserController(IUserService userService, IEmployeeService employeeS
         if(result.IsSuccess)
             return RedirectToAction(nameof(ListUser));
 
-        ViewBag.Error = result.Error!.Description;
+        if (result.Error?.Metadatos?.ContainsKey("Errors") == true)
+        {
+            ViewBag.Errors = result.Error.Metadatos["Errors"];
+        }
         await LoadRolesAndEmployees();
         return View(editUser);
     }

@@ -11,11 +11,14 @@
     <div class="card-body">
         <form class="row g-3" asp-action="EditUser" method="post">
             <input type="hidden" asp-for="Id" />
-            @if (ViewBag.Error is not null)
+            @if (ViewBag.Errors != null)
             {
                 <div class="alert alert-dismissible alert-danger">
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    @ViewBag.Error
+                    @foreach (var error in (List<string>)ViewBag.Errors)
+                    {
+                        <p>@error</p>
+                    }
                 </div>
             }
             <div class="col-12">

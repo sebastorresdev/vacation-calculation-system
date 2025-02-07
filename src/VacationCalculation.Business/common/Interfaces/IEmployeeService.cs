@@ -1,4 +1,5 @@
-﻿using VacationCalculation.Data.Models;
+﻿using VacationCalculation.Business.common.utils;
+using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Business.common.Interfaces;
 public interface IEmployeeService
@@ -8,7 +9,7 @@ public interface IEmployeeService
     Task<Employee?> GetEmployeeByIdAsync(int id);
 
     // Command
-    Task CreateEmployeeAsync(Employee employee);
-    Task UpdateEmployeeAsync(Employee employee);
-    Task DeleteEmployeeAsync(int id);
+    Task<Result<Employee>> CreateEmployeeAsync(Employee employee);
+    Task<Result<bool>> UpdateEmployeeAsync(Employee employee);
+    Task<Result<bool>> DeleteEmployeeAsync(int id);
 }

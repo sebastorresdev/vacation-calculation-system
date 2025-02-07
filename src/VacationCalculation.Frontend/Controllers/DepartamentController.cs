@@ -32,7 +32,16 @@ public class DepartamentController(IDepartamentService departamentService) : Con
             return View(viewModel);
         }
 
-        await _departamentService.CreateDepartamentAsync(viewModel.ToDepartament());
+        var result = await _departamentService.CreateDepartamentAsync(viewModel.ToDepartament());
+
+        if (result.IsFailure)
+        {
+            if (result.Error?.Metadatos?.ContainsKey("Errors") == true)
+            {
+                ViewBag.Errors = result.Error.Metadatos["Errors"];
+            }
+            return View(viewModel);
+        }
 
         return RedirectToAction(nameof(ListDepartament));
     }
@@ -58,7 +67,16 @@ public class DepartamentController(IDepartamentService departamentService) : Con
             return View(viewModel);
         }
 
-        await _departamentService.UpdateDepartamentAsync(viewModel.ToDepartament());
+        var result = await _departamentService.UpdateDepartamentAsync(viewModel.ToDepartament());
+
+        if (result.IsFailure)
+        {
+            if (result.Error?.Metadatos?.ContainsKey("Errors") == true)
+            {
+                ViewBag.Errors = result.Error.Metadatos["Errors"];
+            }
+            return View(viewModel);
+        }
 
         return RedirectToAction(nameof(ListDepartament));
     }

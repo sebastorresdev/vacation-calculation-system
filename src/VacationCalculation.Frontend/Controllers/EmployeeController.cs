@@ -28,12 +28,7 @@ public class EmployeeController(
     // Create action method
     public async Task<IActionResult> CreateEmployee()
     {
-        var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
-        var departaments = await _departamentService.GetAllDepartamentsAsync();
-
-        ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
-        ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
-
+        await LoadDepartamentsAndEmployeeTypes();
         return View();
     }
 
@@ -42,12 +37,7 @@ public class EmployeeController(
     {
         if (!ModelState.IsValid)
         {
-            var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
-            var departaments = await _departamentService.GetAllDepartamentsAsync();
-
-            ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
-            ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
-
+            await LoadDepartamentsAndEmployeeTypes();
             return View(nameof(CreateEmployee), employeeViewModel);
         }
 
@@ -66,12 +56,7 @@ public class EmployeeController(
             return RedirectToAction(nameof(ListEmployees));
         }
 
-        var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
-        var departaments = await _departamentService.GetAllDepartamentsAsync();
-        
-        ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
-        ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
-
+        await LoadDepartamentsAndEmployeeTypes();
         return View(employee.ToUpdateViewModel());
     }
 
@@ -80,15 +65,21 @@ public class EmployeeController(
     {
         if (!ModelState.IsValid)
         {
-            var employeeTypes = await _employeeTypeService.GetAllEmployeeTypesAsync();
-            var departaments = await _departamentService.GetAllDepartamentsAsync();
-
-            ViewBag.Departaments = new SelectList(departaments, "Id", "Name");
-            ViewBag.EmployeeTypes = new SelectList(employeeTypes, "Id", "Name");
-
+            await LoadDepartamentsAndEmployeeTypes();
             return View(nameof(EditEmployee), employeeViewModel);
         }
-        await _employeeService.UpdateEmployeeAsync(employeeViewModel.ToEmployee());
+        var result = await _employeeService.UpdateEmployeeAsync(employeeViewModel.ToEmployee());
+
+        if(result.IsFailure)
+        {
+            if (result.Error?.Metadatos?.ContainsKey("Errors") == true)
+            {
+                ViewBag.Errors = result.Error.Metadatos["Errors"];
+            }
+            await LoadDepartamentsAndEmployeeTypes();
+            return View(nameof(EditEmployee), employeeViewModel);
+        }
+
         return RedirectToAction(nameof(ListEmployees));
     }
 
@@ -98,5 +89,11 @@ public class EmployeeController(
     {
         await _employeeService.DeleteEmployeeAsync(id);
         return RedirectToAction(nameof(ListEmployees));
+    }
+
+    private async Task LoadDepartamentsAndEmployeeTypes()
+    {
+        ViewBag.Departaments = new SelectList(await _departamentService.GetAllDepartamentsAsync(), "Id", "Name");
+        ViewBag.EmployeeTypes = new SelectList(await _employeeTypeService.GetAllEmployeeTypesAsync(), "Id", "Name");
     }
 }

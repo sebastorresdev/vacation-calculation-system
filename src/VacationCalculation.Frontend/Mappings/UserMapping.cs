@@ -10,9 +10,11 @@ public static class UserMapping
         return new UserViewModel
         {
             Id = user.Id,
-            Name = user.Name,
+            Username = user.Name,
+            Name = user.Employee?.Name ?? string.Empty,
             Email = user.Employee?.Email ?? string.Empty,
-            Role = user.Role.Name
+            Role = user.Role.Name,
+            Departament = user.Employee?.Departament?.Name ?? string.Empty
         };
     }
 

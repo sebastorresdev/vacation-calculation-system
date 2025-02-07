@@ -4,5 +4,5 @@ namespace VacationCalculation.Data.Enums;
 public enum RoleType
 {
     Employee = 1,
-    Boos = 2,
+    Boss = 2,
 }

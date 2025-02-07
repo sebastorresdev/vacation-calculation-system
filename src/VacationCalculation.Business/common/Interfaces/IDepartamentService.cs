@@ -1,4 +1,5 @@
-﻿using VacationCalculation.Data.Models;
+﻿using VacationCalculation.Business.common.utils;
+using VacationCalculation.Data.Models;
 
 namespace VacationCalculation.Business.common.Interfaces;
 public interface IDepartamentService
@@ -8,7 +9,7 @@ public interface IDepartamentService
     Task<Departament?> GetDepartamentByIdAsync(int id);
 
     // Commands
-    Task CreateDepartamentAsync(Departament departament);
-    Task UpdateDepartamentAsync(Departament departament);
-    Task DeleteDepartamentAsync(int id);
+    Task<Result<Departament>> CreateDepartamentAsync(Departament departament);
+    Task<Result<bool>> UpdateDepartamentAsync(Departament departament);
+    Task<Result<bool>> DeleteDepartamentAsync(int id);
 }
